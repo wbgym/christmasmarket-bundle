@@ -1,0 +1,107 @@
+<div class="<?php echo $this->class; ?> christmasmarket block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+
+<?php if ($this->message) : ?><div class="message"><?php echo $this->message; ?></div><?php endif; ?>
+
+<?php if (FE_USER_LOGGED_IN) : ?>
+<?php if ($this->access == true) : ?>
+<h2>Einen Standwunsch anmelden</h2>
+<div class="whm_form">
+	<?php if ($this->formError) : ?><div class="error"><?php echo $this->formError; ?></div><?php endif; ?>
+	<form class="whm_form" action="<?php ?>" method="POST">
+		<table class="table">
+			<input type="hidden" name="FORM_SUBMIT" value="whm_form" />
+			<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}" />
+			<tr>
+				<td>Name/Titel <label style="color:red;">*</label></td>
+				<td><input type="text" name="standName" placeholder="Titel des Standes" <?php if ($this->standName) : ?>value="<?php echo $this->standName; ?>"<?php endif; ?>/></td>
+			</tr>
+			<?php if ($this->isClassSpeaker) : ?>
+			<tr>
+				<td>Klasse/Kurs <label style="color:red;">*</label></td>
+				<td>
+					<?php echo $this->strCourse; ?>
+					<div class="abbr">
+						&nbsp;&nbsp;-&nbsp;&nbsp;<a>Diese Angabe ist falsch?</a>
+						<div class="invisible abbr-title">Wenn hier eine falsche Klassen- oder Tutoriumsangabe steht, wende dich bitte an das <a href="webteam-kontakt">Webteam</a>.</div>
+				</td>
+			</tr>
+			<?php endif; ?>
+			<?php if ($this->Template->isTeacher) : ?>
+			<tr>
+				<td>Klasse/Kurs</td>
+					<td>
+					<select name="course">
+						<?php foreach ($this->arrCourses as $course) : ?>
+							<option value="<?php echo $course['id']; ?>"><?php echo $course['name']; ?></option>
+						<?php endforeach; ?>
+					</select>
+				</td>
+			</tr>
+			<?php endif; ?>
+			<tr>
+				<td>Erst- oder Zweitwunsch? <label style="color:red;">*</label></td>
+				<td>
+					<div class="radio"><input type="radio" name="wishnum" value="1" id="firstwish" /><label for="firstwish">Erstwunsch</label></div>
+					<div class="radio"><input type="radio" name="wishnum" value="2" id="secondwish" /><label for="secondwish">Zweitwunsch</label></div>
+				</td>
+			</tr>
+			<tr>
+				<td>Beschreibung</td>
+				<td><textarea name="description" cols="50" rows="10" placeholder="Eine Beschreibung des Stands (optional)"><?php if($this->description) : ?><?php echo $this->description; ?><?php endif; ?></textarea></td>
+			</tr>
+			<tr><td>Kontakt-E-Mail <label style="color:red;">*</label></td><td><input type="email" name="email" value="<?php echo $this->email; ?>" placeholder="Eine Kontakt-E-Mail-Adresse" /></td></tr>
+			<tr><td></td><td><input type="submit" value="Absenden" /></td></tr>
+		</table>
+	</form>
+	<div class="information">
+		Felder, die mit einem <label style="color:red;">*</label> gekennzeichnet sind, sind Pflichtfelder und müssen Angaben enthalten!
+	</div>
+</div>
+
+<?php else : ?><div class="error"><?php echo $GLOBALS['TL_LANG']['WHM']['access_denied']; ?></div><?php endif; ?>
+<?php else : ?><div class="error"><?php echo $GLOBALS['TL_LANG']['WHM']['only_logged_in']; ?></div><?php endif; ?>
+
+<br><hr>
+<h2>Weihnachtsmarkt-Stände Übersicht</h2>
+<div class="christmasmarket">
+	<?php if($this->stations) : ?>
+	<?php foreach ($this->stations as $arrStation) : ?>
+		
+		
+			<?php if($this->isClassSpeaker && $this->intCourse == $arrStation['course'] && !$station['approved']) : ?>
+				<form action="<?php ?>" class="whm_edit_form" method="POST">
+					<div class="station">
+					<input type="hidden" name="FORM_SUBMIT" value="whm_edit_form" />
+					<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}" />
+					<input type="hidden" name="station_id" value="<?php echo $arrStation['id']; ?>" />
+					<div class="headline">
+						<input type="text" name="standName" placeholder="Name des Standes" value="<?php echo $arrStation['name']; ?>" /> 
+						<input type="submit" value="Änderungen speichern" /> &middot; 
+						<span class="whm_edit_cancel">Abbrechen</span>
+					</div>
+					<div class="subhead">
+						<div class="class"><?= $arrStation['course_str'] ?></div>
+						<div class="wishnum"><?php echo $arrStation['wishnum']; ?>. Wunsch</div>
+					</div>
+					<div class="description"><textarea name="description" placeholder="Beschreibung des Standes (optional)"><?php if($arrStation['description']) : ?><?php echo $arrStation['description']; ?><?php endif; ?></textarea></div>
+					</div>
+				</form>
+			<?php endif; ?>
+			
+		<div class="station <?php if (!$arrStation['approved']) : ?>not_approved<?php endif; ?>">
+			<div class="headline"> 
+				<div class="name"><b><?php echo $arrStation['name']; ?></b> <?php if($this->isClassSpeaker && $this->intCourse == $arrStation['course'] && !$arrStation['approved']) : ?><span class="toggle_edit_station"> - Bearbeiten</span><?php endif; ?></div>
+			</div>
+			<div class="subhead">
+				<div class="class"><?= $arrStation['course_str'] ?></div>
+				<div class="wishnum"><?php echo $arrStation['wishnum']; ?>. Wunsch</div>
+			</div>
+			<?php if ($arrStation['description']) : ?><div class="description"><?php echo $arrStation['description']; ?></div><?php endif; ?>
+		</div>
+		
+	<?php endforeach; ?>
+	<?php else : ?>Keine Stände vorhanden.<?php endif; ?>
+	
+</div>
+
+</div>

@@ -22,7 +22,7 @@
 					<?php echo $this->strCourse; ?>
 					<div class="abbr">
 						&nbsp;&nbsp;-&nbsp;&nbsp;<a>Diese Angabe ist falsch?</a>
-						<div class="invisible abbr-title">Wenn hier eine falsche Klassen- oder Tutoriumsangabe steht, wende dich bitte an das <a href="webteam-kontakt">Webteam</a>.</div>
+						<div class="invisible abbr-title">Wenn hier eine falsche Klassen- oder Tutoriumsangabe steht, wende dich bitte an das Webteam.</div>
 				</td>
 			</tr>
 			<?php endif; ?>

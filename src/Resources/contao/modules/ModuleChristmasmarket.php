@@ -148,8 +148,6 @@ protected function compile(){
 	  while($arrStation = $stations->fetchAssoc()) {
       $arrStation['course_str'] = WBGym::course($arrStation['course']);
       $arrStations[] = $arrStation;
-
-      dump($arrStation);
 	  }
 	  return $arrStations;
 	}

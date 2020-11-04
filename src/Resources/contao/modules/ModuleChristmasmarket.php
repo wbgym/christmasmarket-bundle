@@ -47,8 +47,9 @@ protected function compile(){
 	 /*Formular für Standanmeldung ====================================*/
 	  
 	  if(FE_USER_LOGGED_IN) {
-	  $this->import('FrontendUser','User');
-	  
+    $this->import('FrontendUser','User');
+    $this->Template->intCourse = $this->User->course;
+
 	  //If User is Teacher
 	  if(in_array(WBGym::getGroupIdFor('teachers'),$this->User->groups)){
 		  $this->Template->access = true;
@@ -63,13 +64,12 @@ protected function compile(){
 	 
 	 //If User is Class Speaker
 	 else {
-			$thisCourse = $this->Database->prepare("SELECT * FROM tl_courses WHERE classsp1 = ? or classsp2 = ?")->execute($this->User->id,$this->User->id)->fetchAssoc();
-			
+      $thisCourse = $this->Database->prepare("SELECT * FROM tl_courses WHERE classsp1 = ? or classsp2 = ?")->execute($this->User->id,$this->User->id)->fetchAssoc();
+
 			if(!empty($thisCourse) && ($thisCourse['classsp1'] == $this->User->id || $thisCourse['classsp2'] == $this->User->id)){
 				$this->Template->access = true;
 				$this->Template->isClassSpeaker = true;
 				$this->Template->strCourse = WBGym::course($thisCourse['id']);
-				$this->Template->intCourse = $thisCourse['id'];
 			}
 	  }
 	  $this->Template->email = $this->User->email;

@@ -89,8 +89,6 @@
 				</form>
 			<?php endif; ?>
 
-        <?php dump($this->intCourse) ?>
-
 		<div class="station <?php if (!$arrStation['approved']) : ?>not_approved<?php if($this->intCourse == $arrStation['course']) : ?> own<?php endif; ?><?php endif; ?>">
 			<div class="headline"> 
 				<div class="name"><?php if($this->isClassSpeaker && $this->intCourse == $arrStation['course'] && !$arrStation['approved']) : ?><span class="toggle_edit_station">Bearbeiten</span><?php endif; ?><strong><?php echo $arrStation['name']; ?></strong></div>

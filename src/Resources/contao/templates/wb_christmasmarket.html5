@@ -61,23 +61,20 @@
 <?php else : ?><div class="error"><?php echo $GLOBALS['TL_LANG']['WHM']['access_denied']; ?></div><?php endif; ?>
 <?php else : ?><div class="error"><?php echo $GLOBALS['TL_LANG']['WHM']['only_logged_in']; ?></div><?php endif; ?>
 
-<br><hr>
 <h2>Weihnachtsmarkt-Stände Übersicht</h2>
 <div class="christmasmarket">
 	<?php if($this->stations) : ?>
 	<?php foreach ($this->stations as $arrStation) : ?>
 		
 		
-			<?php if($this->isClassSpeaker && $this->intCourse == $arrStation['course'] && !$station['approved']) : ?>
-				<form action="<?php ?>" class="whm_edit_form" method="POST">
-					<div class="station">
+			<?php if($this->isClassSpeaker && $this->intCourse == $arrStation['course'] && !$arrStation['approved']) : ?>
+                <form action="<?php ?>" class="whm_edit_form" method="POST">
+					<div class="station own">
 					<input type="hidden" name="FORM_SUBMIT" value="whm_edit_form" />
 					<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}" />
-					<input type="hidden" name="station_id" value="<?php echo $arrStation['id']; ?>" />
+					<input type="hidden" name="station_id" value="<?= $arrStation['station_id']; ?>" />
 					<div class="headline">
-						<input type="text" name="standName" placeholder="Name des Standes" value="<?php echo $arrStation['name']; ?>" /> 
-						<input type="submit" value="Änderungen speichern" /> &middot; 
-						<span class="whm_edit_cancel">Abbrechen</span>
+						<input type="text" name="standName" placeholder="Name des Standes" value="<?php echo $arrStation['name']; ?>" />
 					</div>
 					<div class="subhead">
 						<div class="class"><?= $arrStation['course_str'] ?></div>
@@ -85,12 +82,16 @@
 					</div>
 					<div class="description"><textarea name="description" placeholder="Beschreibung des Standes (optional)"><?php if($arrStation['description']) : ?><?php echo $arrStation['description']; ?><?php endif; ?></textarea></div>
 					</div>
+                    <div class="buttons">
+                        <input type="submit" value="Änderungen speichern" />
+                        <span class="whm_edit_cancel">Abbrechen</span>
+                    </div>
 				</form>
 			<?php endif; ?>
 			
-		<div class="station <?php if (!$arrStation['approved']) : ?>not_approved<?php endif; ?>">
+		<div class="station <?php if (!$arrStation['approved']) : ?>not_approved<?php if($this->isClassSpeaker && $this->intCourse == $arrStation['course']) : ?> own<?php endif; ?><?php endif; ?>">
 			<div class="headline"> 
-				<div class="name"><b><?php echo $arrStation['name']; ?></b> <?php if($this->isClassSpeaker && $this->intCourse == $arrStation['course'] && !$arrStation['approved']) : ?><span class="toggle_edit_station"> - Bearbeiten</span><?php endif; ?></div>
+				<div class="name"><?php if($this->isClassSpeaker && $this->intCourse == $arrStation['course'] && !$arrStation['approved']) : ?><span class="toggle_edit_station">Bearbeiten</span><?php endif; ?><strong><?php echo $arrStation['name']; ?></strong></div>
 			</div>
 			<div class="subhead">
 				<div class="class"><?= $arrStation['course_str'] ?></div>

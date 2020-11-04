@@ -115,7 +115,7 @@ protected function compile(){
 			}
 		}
 		
-		$this->Database->prepare("INSERT INTO tl_christmasmarket (name,tstamp,description,email,course,wishnum,approved) VALUES (?,?,?,?,?,?,0)")->execute($_POST['standName'],time(),$_POST['description'],$_POST['email'],$courseId,$_POST['wishnum']);
+		$this->Database->prepare("INSERT INTO tl_christmasmarket (name,tstamp,description,email,course,wishnum,approved) VALUES (?,?,?,?,?,?,0)")->execute($this->Input->post('standName'),time(),$this->Input->post('description'),$this->Input->post('email'),$courseId,$this->Input->post('wishnum'));
 		$this->Template->message = $GLOBALS['TL_LANG']['WHM']['success'];
 		
 		$this->Template->stations = $this->loadStations();
@@ -131,8 +131,8 @@ protected function compile(){
 			$this->Template->formError = $GLOBALS['TL_LANG']['WHM']['name_empty'];
 			return;
 		}
-		$standId = $_POST['station_id'];
-		$this->Database->prepare("UPDATE tl_christmasmarket SET name=?, description=?, tstamp=? WHERE id=$standId ")->execute($_POST['standName'], $_POST['description'],time());
+		$standId = $this->Input->post('station_id');
+		$this->Database->prepare("UPDATE tl_christmasmarket SET name=?, description=?, tstamp=? WHERE id=?")->execute($this->Input->post('standName'), $this->Input->post('description'),time(),$standId);
 		$this->Template->message = $GLOBALS['TL_LANG']['WHM']['success'];
 		
 		$this->Template->stations = $this->loadStations();
@@ -143,11 +143,13 @@ protected function compile(){
 }
 	  
 	protected function loadStations(){
-			  $stations = $this->Database->prepare("SELECT * FROM tl_christmasmarket JOIN tl_courses ON tl_christmasmarket.course = tl_courses.id ORDER BY tl_courses.grade, tl_courses.formSelector,tl_courses.graduation asc,tl_christmasmarket.wishnum asc")
+			  $stations = $this->Database->prepare("SELECT cm.id AS station_id, cm.name, cm.description, cm.email, cm.approved, cm.wishnum, cm.course, cr.* FROM tl_christmasmarket cm JOIN tl_courses cr ON cm.course = cr.id ORDER BY cr.grade, cr.formSelector,cr.graduation asc,cm.wishnum asc")
 										->execute();
 	  while($arrStation = $stations->fetchAssoc()) {
-		$arrStation['course_str'] = WBGym::course($arrStation['course']);  
-		$arrStations[] = $arrStation;
+      $arrStation['course_str'] = WBGym::course($arrStation['course']);
+      $arrStations[] = $arrStation;
+
+      dump($arrStation);
 	  }
 	  return $arrStations;
 	}
